@@ -10,10 +10,10 @@ elseif add_bias == 2
     [~,b_a] = ode45(@(t,x) -1/1e4*x+1e-3*randn(1,1),...
         imu.t, ones(1,1)); % 5e-2
     b_a = repmat(b_a, 1, 3)';
-%     [~,b_g] = ode45(@(t,x) -1/1e4*x+1e-5*randn(1,1),...
-%         imu.t, ones(1,1)); % 5e-3
-%     b_g = repmat(b_g, 1, 3)';
-    b_g = zeros(size(b_a));
+    [~,b_g] = ode45(@(t,x) -1/1e4*x+1e-5*randn(1,1),...
+        imu.t, ones(1,1)); % 5e-3
+    b_g = repmat(b_g, 1, 3)';
+%     b_g = zeros(size(b_a));
 elseif add_bias == 3
     b_a = repmat(0.05, 3, length(imu.t));
     b_g = repmat(0, 3, length(imu.t));

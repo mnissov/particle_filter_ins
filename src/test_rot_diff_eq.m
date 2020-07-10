@@ -10,6 +10,8 @@ reshape(Y(end,:), 3, 3)
 Ts = 0.01;
 for k=0:Ts:9
     R = R+Ts*reshape(Rdot(0, R, [0;0;deg2rad(10)]), 3,3);
+    [U,~,V] = svd(R);
+    R = U*V';
 end
 R
 
@@ -23,6 +25,7 @@ quat2rotm(Y(end,:))
 Ts = 0.01;
 for k=0:Ts:9
     q = q+Ts*qdot(0, q, [0;0;deg2rad(10)]);
+    q = q./sqrt(sum(q.^2,1));
 end
 quat2rotm(q')
 
@@ -39,6 +42,7 @@ reshape(Y(end,7:15), 3, 3)
 Ts = 0.01;
 for k=0:Ts:9
     x0 = x0+Ts*full_state(0, x0, [zeros(3,1);0;0;deg2rad(10)]);
+    x0(7:15,:) = orthonormalize(x0(7:15,:));
 end
 reshape(x0(7:15), 3, 3)
 
@@ -48,7 +52,9 @@ function [ out ] = Rdot( t,R,w )
     out = out(:);
 end
 function [ out ] = qdot( t,q,angvel )
-    q = quaternion(q');
-    w = quaternion([0; angvel]');
-    out = compact(0.5*w*q)';
+%     qnew = quaternion(q');
+%     wnew = quaternion([0; angvel]');
+%     out = compact(0.5*wnew*qnew)';
+    w = [0; angvel];
+    out = 0.5*quatmult(w, q);
 end
